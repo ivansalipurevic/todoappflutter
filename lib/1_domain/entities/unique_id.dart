@@ -12,13 +12,13 @@ class UniqueId {
   }
 }
 
-class CollectionId extends UniqueId{
-  const CollectionId._(String value) : super._(value);
+class EntryId extends UniqueId{
+  const EntryId._(String value) : super._(value);
 
-  factory CollectionId(){
-    return CollectionId._(const Uuid().v4());
+  factory EntryId(){
+    return EntryId._(const Uuid().v4());
   }
-  factory CollectionId.fromUniqueString(String uniqueString){
-    return CollectionId._(uniqueString);
+  factory EntryId.fromUniqueString(String uniqueString){
+    return EntryId._(uniqueString);
   }
 }
