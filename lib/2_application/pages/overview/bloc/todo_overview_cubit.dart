@@ -11,7 +11,7 @@ class TodoOverviewCubit extends Cubit<TodoOverviewCubitState> {
   TodoOverviewCubit({
     TodoOverviewCubitState? initialState,
     required this.loadTodoCollections,
-  }) : super(initialState ?? TodoOverviewCubitLoadingState());
+  }) : super(initialState ?? const TodoOverviewCubitLoadingState());
 
   
   final LoadTodoCollections loadTodoCollections;

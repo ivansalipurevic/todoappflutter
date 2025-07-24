@@ -7,9 +7,13 @@ abstract class TodoOverviewCubitState extends Equatable {
   List<Object> get props => [];
 }
 
-class TodoOverviewCubitLoadingState extends TodoOverviewCubitState {}
+class TodoOverviewCubitLoadingState extends TodoOverviewCubitState {
+  const TodoOverviewCubitLoadingState();
+}
 
-class TodoOverviewCubitErrorState extends TodoOverviewCubitState {}
+class TodoOverviewCubitErrorState extends TodoOverviewCubitState {
+  const TodoOverviewCubitErrorState();
+}
 
 class TodoOverviewCubitLoadedState extends TodoOverviewCubitState {
   const TodoOverviewCubitLoadedState({required this.collections});
