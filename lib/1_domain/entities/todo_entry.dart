@@ -12,9 +12,16 @@ class TodoEntry {
   });
 
   factory TodoEntry.empty() {
-    return TodoEntry(
-      id: EntryId(), 
-      description: '', 
-      isDone: false);
+    return TodoEntry(id: EntryId(), description: '', isDone: false);
   }
+  TodoEntry copyWith({String? description, bool? isDone}) {
+    return TodoEntry(
+      id: id,
+      description: description ?? this.description,
+      isDone: isDone ?? this.isDone,
+    );
+  }
+
+  @override
+  List<Object?> get props => [id, isDone, description];
 }

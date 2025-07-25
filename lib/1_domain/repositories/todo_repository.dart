@@ -11,4 +11,7 @@ abstract class TodoRepository {
   Future<Either<Failure, TodoEntry>> readToDoEntry(CollectionId collectionId, EntryId entryId);
 
   Future<Either<Failure, List<EntryId>>> readToDoEntryIds(CollectionId collectionId);
+
+   Future<Either<Failure, TodoEntry>> UpdateTodoEntry({required CollectionId collectionId, required EntryId entryId});
+
 }
