@@ -1,32 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
-import 'package:todo_app/2_application/core/page_config.dart';
-import 'package:todo_app/2_application/pages/dashboard/dashboard_page.dart';
-import 'package:todo_app/2_application/pages/overview/overview_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:todo_app/2_application/core/page_config.dart';
+import 'package:todo_app/2_application/pages/create_todo_collection/create_todo_collection_page.dart';
+import 'package:todo_app/2_application/pages/dashboard/dashboard_page.dart';
+import 'package:todo_app/2_application/pages/home/bloc/navigation_todo_cubit.dart';
+import 'package:todo_app/2_application/pages/overview/overview_page.dart';
 import 'package:todo_app/2_application/pages/settings/settings_page.dart';
+import 'package:todo_app/2_application/pages/detail/todo_detail_page.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key, required String tab})
-    : index = tabs.indexWhere((element) => element.name == tab);
+      : index = tabs.indexWhere((element) => element.name == tab);
+
   static const PageConfig pageConfig = PageConfig(
     icon: Icons.home_rounded,
     name: 'home',
   );
+
   final int index;
 
-  static const tabs = [DashboardPage.pageConfig, OverviewPage.pageConfig];
+  static final tabs = [
+    PageConfig(
+      icon: DashboardPage.pageConfig.icon,
+      name: DashboardPage.pageConfig.name,
+      child: DashboardPage(),
+    ),
+    PageConfig(
+      icon: OverviewPage.pageConfig.icon,
+      name: OverviewPage.pageConfig.name,
+      child: OverviewPage(),
+    ),
+  ];
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final destinations = HomePage.tabs
-      .map(
-        (page) =>
-            NavigationDestination(icon: Icon(page.icon), label: page.name),
-      )
+  late final List<NavigationDestination> destinations = HomePage.tabs
+      .map((page) => NavigationDestination(icon: Icon(page.icon), label: page.name))
       .toList();
 
   @override
@@ -39,11 +53,16 @@ class _HomePageState extends State<HomePage> {
             config: <Breakpoint, SlotLayoutConfig>{
               Breakpoints.mediumAndUp: SlotLayout.from(
                 key: const Key('primary-navigation-medium'),
-
                 builder: (context) => AdaptiveScaffold.standardNavigationRail(
+                  leading: ElevatedButton.icon(
+                    onPressed: () {
+                      context.pushNamed(CreateTodoCollectionPage.pageConfig.name);
+                    },
+                    icon: Icon(CreateTodoCollectionPage.pageConfig.icon),
+                    label: const Text('Add collection'),
+                  ),
                   trailing: IconButton(
-                    onPressed: () =>
-                        context.pushNamed(SettingsPage.pageConfig.name),
+                    onPressed: () => context.pushNamed(SettingsPage.pageConfig.name),
                     icon: Icon(SettingsPage.pageConfig.icon),
                   ),
                   selectedLabelTextStyle: TextStyle(
@@ -59,10 +78,7 @@ class _HomePageState extends State<HomePage> {
                       _tapOnNavigationDestination(context, index),
                   selectedIndex: widget.index,
                   destinations: destinations
-                      .map(
-                        (element) =>
-                            AdaptiveScaffold.toRailDestination(element),
-                      )
+                      .map((element) => AdaptiveScaffold.toRailDestination(element))
                       .toList(),
                 ),
               ),
@@ -74,10 +90,10 @@ class _HomePageState extends State<HomePage> {
                 key: const Key('bottom-navigation-small'),
                 builder: (context) =>
                     AdaptiveScaffold.standardBottomNavigationBar(
-                      destinations: destinations,
-                      onDestinationSelected: (index) =>
-                          _tapOnNavigationDestination(context, index),
-                    ),
+                  destinations: destinations,
+                  onDestinationSelected: (index) =>
+                      _tapOnNavigationDestination(context, index),
+                ),
               ),
             },
           ),
@@ -93,7 +109,20 @@ class _HomePageState extends State<HomePage> {
             config: <Breakpoint, SlotLayoutConfig>{
               Breakpoints.mediumAndUp: SlotLayout.from(
                 key: const Key('secondary-body'),
-                builder: AdaptiveScaffold.emptyBuilder,
+                builder: widget.index != 1
+                    ? null
+                    : (_) => BlocBuilder<NavigationTodoCubit, NavigationTodoCubitState>(
+                          builder: (context, state) {
+                            final selectedId = state.selectedCollectionId;
+                            if (selectedId == null) {
+                              return const Placeholder();
+                            }
+                            return TodoDetailPage(
+                              key: Key(selectedId.value),
+                              collectionId: selectedId,
+                            );
+                          },
+                        ),
               ),
             },
           ),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo_app/1_domain/entities/todo_collection.dart';
-import 'package:go_router/go_router.dart';
+import 'package:todo_app/2_application/pages/home/bloc/navigation_todo_cubit.dart';
+import 'package:todo_app/2_application/pages/detail/todo_detail_page.dart';
 
 class TodoOverviewLoaded extends StatelessWidget {
   const TodoOverviewLoaded({super.key, required this.collections});
@@ -15,25 +17,34 @@ class TodoOverviewLoaded extends StatelessWidget {
       itemCount: collections.length,
       itemBuilder: (context, index) {
         final item = collections[index];
-        final ColorScheme = Theme.of(context).colorScheme;
+        final colorScheme = Theme.of(context).colorScheme;
 
-        return ListTile(
-          tileColor: ColorScheme.surface,
-          selectedTileColor: ColorScheme.surfaceVariant,
-          iconColor: item.color.color,
-          selectedColor: item.color.color,
-          onTap: () {
-            if(Breakpoints.small.isActive(context)){
-              context.pushNamed(
-                TodoDetailPage.pageConfig.name, params: {
-                  'collectionId': item.id.value,
+        return BlocBuilder<NavigationTodoCubit, NavigationTodoCubitState>(
+          buildWhen:  (previous, current) => previous.selectedCollectionId != current,
+          builder: (context, state) {
+            debugPrint('build item ${item.id.value}');
+            return ListTile(
+              tileColor: colorScheme.surface,
+              selectedTileColor: colorScheme.surfaceVariant,
+              iconColor: item.color.color,
+              selectedColor: item.color.color,
+              selected:  state.selectedCollectionId == item.id,
+              onTap: () {
+                context.read<NavigationTodoCubit>().selectedTodoCollectionChanged(item.id);
+
+                if (Breakpoints.small.isActive(context)) {
+                  context.pushNamed(
+                    TodoDetailPage.pageConfig.name,
+                    pathParameters: {
+                      'collectionId': item.id.value,
+                    },
+                  );
                 }
-              );
-            }
+              },
+              leading: const Icon(Icons.circle),
+              title: Text(item.title),
+            );
           },
-          leading: const Icon(Icons.circle),
-          title: Text(item.title),
-          
         );
       },
     );
