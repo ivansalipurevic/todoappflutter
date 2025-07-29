@@ -23,3 +23,11 @@ class CollectionIdParam extends Params {
   @override
   List<Object> get props => [collectionId];
 }
+class TodoCollectionParams extends Params {
+  TodoCollectionParams({required this.collection}) : super();
+
+  final EntryId collection;  
+
+  @override
+  List<Object> get props => [collection];
+}

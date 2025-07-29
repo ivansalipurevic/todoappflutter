@@ -54,12 +54,12 @@ class _HomePageState extends State<HomePage> {
               Breakpoints.mediumAndUp: SlotLayout.from(
                 key: const Key('primary-navigation-medium'),
                 builder: (context) => AdaptiveScaffold.standardNavigationRail(
-                  leading: ElevatedButton.icon(
+                  leading: IconButton(
                     onPressed: () {
                       context.pushNamed(CreateTodoCollectionPage.pageConfig.name);
                     },
                     icon: Icon(CreateTodoCollectionPage.pageConfig.icon),
-                    label: const Text('Add collection'),
+                    tooltip:'Add collection'
                   ),
                   trailing: IconButton(
                     onPressed: () => context.pushNamed(SettingsPage.pageConfig.name),
