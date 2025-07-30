@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:todo_app/1_domain/entities/todo_collection.dart';
 import 'package:todo_app/1_domain/entities/todo_color.dart';
 import 'package:todo_app/1_domain/use_cases/create_todo_collection.dart';
-import 'package:todo_app/core/use_case.dart';
+
 
 part 'create_todo_collection_page_state.dart';
 

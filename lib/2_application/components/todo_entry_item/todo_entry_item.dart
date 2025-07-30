@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/1_domain/entities/collections_id.dart';
-import 'package:todo_app/1_domain/entities/entry_id.dart';
+import 'package:todo_app/1_domain/entities/unique_id.dart';
+
 import 'package:todo_app/1_domain/repositories/todo_repository.dart';
 import 'package:todo_app/1_domain/use_cases/load_todo_entry.dart';
 import 'package:todo_app/2_application/components/bloc/todo_entry_item_cubit.dart';
@@ -42,7 +43,7 @@ class TodoEntryItem extends StatelessWidget {
     return BlocBuilder<TodoEntryItemCubit, TodoEntryItemState>(
       builder: (context, state) {
         if (state is TodoEntryItemLoadingState) {
-          return const TodoEntryItemLoading();
+          return const TodoEntryItemLoading(); 
         } else if (state is TodoEntryItemLoadedState) {
           return TodoEntryItemLoaded(entryItem: state.toDoEntry);
         } else {

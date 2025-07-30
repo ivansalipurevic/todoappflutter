@@ -1,6 +1,7 @@
+import 'package:equatable/equatable.dart';
 import 'package:todo_app/1_domain/entities/unique_id.dart';
 
-class TodoEntry {
+class TodoEntry extends Equatable {
   final String description;
   final bool isDone;
   final EntryId id;
@@ -14,6 +15,7 @@ class TodoEntry {
   factory TodoEntry.empty() {
     return TodoEntry(id: EntryId(), description: '', isDone: false);
   }
+
   TodoEntry copyWith({String? description, bool? isDone}) {
     return TodoEntry(
       id: id,

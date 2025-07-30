@@ -1,6 +1,7 @@
 import 'package:either_dart/either.dart';
 import 'package:todo_app/1_domain/entities/collections_id.dart';
-import 'package:todo_app/1_domain/entities/entry_id.dart';
+
+import 'package:todo_app/1_domain/entities/unique_id.dart';
 import 'package:todo_app/1_domain/failures/failures.dart';
 import 'package:todo_app/1_domain/repositories/todo_repository.dart';
 import 'package:todo_app/core/use_case.dart';

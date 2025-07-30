@@ -4,8 +4,11 @@ import 'package:todo_app/2_application/pages/detail/bloc/todo_detail_cubit.dart'
 import 'package:todo_app/1_domain/use_cases/load_todo_entry_ids_for_collection.dart';
 import 'package:todo_app/1_domain/entities/collections_id.dart';
 
+typedef ToDoEntryItemAddedCallback = Function();
 
 class TodoDetailPage extends StatelessWidget {
+  static const pageConfig = _PageConfig(name: 'todo-detail');
+
   final CollectionId collectionId;
   final LoadTodoEntryIdsForCollection loadTodoEntryIdsForCollection;
 
@@ -24,12 +27,12 @@ class TodoDetailPage extends StatelessWidget {
       )..fetch(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Todo Detail'),
+          title: const Text('Todo Detail'),
         ),
         body: BlocBuilder<TodoDetailCubit, TodoDetailCubitState>(
           builder: (context, state) {
             if (state is ToDoDetailCubitLoadingState) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             } else if (state is ToDoDetailCubitLoadedState) {
               return ListView.builder(
                 itemCount: state.entryIds.length,
@@ -40,11 +43,17 @@ class TodoDetailPage extends StatelessWidget {
                 },
               );
             } else {
-              return Center(child: Text('Error loading entries'));
+              return const Center(child: Text('Error loading entries'));
             }
           },
         ),
       ),
     );
   }
+}
+
+/// Simple config class for GoRouter compatibility.
+class _PageConfig {
+  final String name;
+  const _PageConfig({required this.name});
 }

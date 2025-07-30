@@ -1,7 +1,13 @@
 import 'package:either_dart/either.dart';
+import 'package:todo_app/1_domain/entities/todo_collection.dart';
 import 'package:todo_app/1_domain/failures/failures.dart';
 import 'package:todo_app/1_domain/repositories/todo_repository.dart';
 import 'package:todo_app/core/use_case.dart';
+
+class TodoCollectionParams {
+  final TodoCollection collection;
+  TodoCollectionParams({required this.collection});
+}
 
 class CreateTodoCollection implements UseCase<bool, TodoCollectionParams> {
   final TodoRepository todoRepository;
@@ -18,4 +24,3 @@ class CreateTodoCollection implements UseCase<bool, TodoCollectionParams> {
     }
   }
 }
-

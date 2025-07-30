@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/1_domain/entities/collections_id.dart';
-import 'package:todo_app/1_domain/entities/entry_id.dart';
+
+import 'package:todo_app/1_domain/entities/unique_id.dart';
 import 'package:todo_app/1_domain/use_cases/load_todo_entry_ids_for_collection.dart';
 
 part 'todo_detail_cubit_state.dart';

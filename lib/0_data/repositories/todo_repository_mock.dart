@@ -7,7 +7,6 @@ import 'package:todo_app/1_domain/entities/todo_entry.dart';
 import 'package:todo_app/1_domain/repositories/todo_repository.dart';
 import 'package:todo_app/1_domain/entities/collections_id.dart';
 
-
 class TodoRepositoryMock implements TodoRepository {
   final List<TodoEntry> toDoEntries = List.generate(
     100,
@@ -19,17 +18,18 @@ class TodoRepositoryMock implements TodoRepository {
   );
 
   @override
-  Future<Either<Failure, List<TodoCollection>>> readToDoCollections() async {
-    final list = List<TodoCollection>.generate(
-      10,
-      (index) => TodoCollection(
-        id: CollectionId.fromUniqueString(index.toString()),
-        title: 'title $index',
-        color: TodoColor(colorIndex: index % TodoColor.predefinedColors.length),
-      ),
-    );
-    return Future.delayed(Duration(milliseconds: 200), () => Right(list));
-  }
+Future<Either<Failure, List<TodoCollection>>> readToDoCollections() async {
+  final list = List<TodoCollection>.generate(
+    10,
+    (index) => TodoCollection(
+      id: CollectionId.fromUniqueString(index.toString()),
+      title: 'title $index',
+      color: TodoColor(colorIndex: index % TodoColor.predefinedColors.length),
+    ),
+  );
+  return Future.delayed(Duration(milliseconds: 200), () => Right(list));
+}
+
 
   @override
   Future<Either<Failure, TodoEntry>> readToDoEntry(
@@ -70,7 +70,15 @@ class TodoRepositoryMock implements TodoRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> updateTodoEntry(TodoEntry entry) async {
-    return Right(true);
+  Future<Either<Failure, TodoEntry>> updateTodoEntry({
+    required CollectionId collectionId,
+    required EntryId entryId,
+  }) async {
+    final updatedEntry = TodoEntry(
+      id: entryId,
+      description: 'Updated description',
+      isDone: false,
+    );
+    return Right(updatedEntry);
   }
 }

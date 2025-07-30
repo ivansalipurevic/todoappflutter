@@ -3,6 +3,7 @@ import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo_app/1_domain/entities/todo_collection.dart';
+import 'package:todo_app/2_application/pages/create_todo_collection/create_todo_collection_page.dart';
 import 'package:todo_app/2_application/pages/home/bloc/navigation_todo_cubit.dart';
 import 'package:todo_app/2_application/pages/detail/todo_detail_page.dart';
 
@@ -13,40 +14,58 @@ class TodoOverviewLoaded extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: collections.length,
-      itemBuilder: (context, index) {
-        final item = collections[index];
-        final colorScheme = Theme.of(context).colorScheme;
-
-        return BlocBuilder<NavigationTodoCubit, NavigationTodoCubitState>(
-          buildWhen:  (previous, current) => previous.selectedCollectionId != current,
-          builder: (context, state) {
-            debugPrint('build item ${item.id.value}');
-            return ListTile(
-              tileColor: colorScheme.surface,
-              selectedTileColor: colorScheme.surfaceVariant,
-              iconColor: item.color.color,
-              selectedColor: item.color.color,
-              selected:  state.selectedCollectionId == item.id,
-              onTap: () {
-                context.read<NavigationTodoCubit>().selectedTodoCollectionChanged(item.id);
-
-                if (Breakpoints.small.isActive(context)) {
-                  context.pushNamed(
-                    TodoDetailPage.pageConfig.name,
-                    pathParameters: {
-                      'collectionId': item.id.value,
-                    },
-                  );
-                }
+    return Stack(
+      children: [
+        ListView.builder(
+          itemCount: collections.length,
+          itemBuilder: (context, index) {
+            final item = collections[index];
+            final colorScheme = Theme.of(context).colorScheme;
+        
+            return BlocBuilder<NavigationTodoCubit, NavigationTodoCubitState>(
+              buildWhen: (previous, current) =>
+                  previous.selectedCollectionId != current.selectedCollectionId,
+              builder: (context, state) {
+                debugPrint('build item ${item.id.value}');
+                return Stack(
+                  children: [
+                    ListTile(
+                      tileColor: colorScheme.surface,
+                      selectedTileColor: colorScheme.surfaceVariant,
+                      iconColor: item.color.color,
+                      selectedColor: item.color.color,
+                      selected: state.selectedCollectionId?.value == item.id.value,
+                      onTap: () {
+                        context
+                            .read<NavigationTodoCubit>()
+                            .selectedTodoCollectionChanged(item.id);
+        
+                        if (Breakpoints.small.isActive(context)) {
+                          context.pushNamed(
+                            TodoDetailPage.pageConfig.name,
+                            pathParameters: {'collectionId': item.id.value},
+                          );
+                        }
+                      },
+                      leading: const Icon(Icons.circle),
+                      title: Text(item.title),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: FloatingActionButton(
+                        onPressed: () => context.pushNamed(
+                          CreateTodoCollectionPage.pageConfig.name,
+                        ),
+                        child: Icon(CreateTodoCollectionPage.pageConfig.icon),
+                      ),
+                    ),
+                  ],
+                );
               },
-              leading: const Icon(Icons.circle),
-              title: Text(item.title),
             );
           },
-        );
-      },
+        ),
+      ],
     );
   }
 }

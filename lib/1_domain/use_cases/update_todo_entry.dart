@@ -14,7 +14,7 @@ class UpdateTodoEntry implements UseCase<TodoEntry, TodoEntryIdsParam> {
   @override
   Future<Either<Failure, TodoEntry>> call(TodoEntryIdsParam params) async {
     try {
-      final loadedEntry = await todoRepository.UpdateTodoEntry(
+      final loadedEntry = await todoRepository.updateTodoEntry(
         collectionId: params.collectionId,
         entryId: params.entryId,
       );
