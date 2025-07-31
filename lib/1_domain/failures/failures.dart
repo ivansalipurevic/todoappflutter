@@ -1,13 +1,12 @@
-import 'package:equatable/equatable.dart';
-
-abstract class Failure{
-  
+abstract class Failure {
+  final String stackTrace;
+  const Failure({required this.stackTrace});
 }
-class ServerFailure extends Failure with EquatableMixin{
-  ServerFailure({this.stackTrace});
 
-  final String? stackTrace;
+class CacheFailure extends Failure {
+  const CacheFailure({required String stackTrace}) : super(stackTrace: stackTrace);
+}
 
-  @override
-  List<Object?> get props => [stackTrace];
+class ServerFailure extends Failure {
+  const ServerFailure({required String stackTrace}) : super(stackTrace: stackTrace);
 }

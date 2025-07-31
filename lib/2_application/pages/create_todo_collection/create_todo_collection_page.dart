@@ -85,7 +85,7 @@ class _CreateTodoCollectionPageState extends State<CreateTodoCollectionPage> {
                 final isValid = _formKey.currentState?.validate();
                 if (isValid == true) {
                   context.read<CreateTodoCollectionPageCubit>().sumbit();
-                  context.pop();
+                  context.pop(true);
                 }
               },
               child: const Text('Save Collection'),
