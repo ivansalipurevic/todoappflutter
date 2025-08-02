@@ -11,7 +11,6 @@ class BasicApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<NavigationTodoCubit>(
       create: (context) => NavigationTodoCubit(),
-
       child: MaterialApp.router(
         title: 'ToDo App',
         localizationsDelegates: [

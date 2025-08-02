@@ -21,49 +21,52 @@ class TodoOverviewLoaded extends StatelessWidget {
           itemBuilder: (context, index) {
             final item = collections[index];
             final colorScheme = Theme.of(context).colorScheme;
-        
+
             return BlocBuilder<NavigationTodoCubit, NavigationTodoCubitState>(
               buildWhen: (previous, current) =>
                   previous.selectedCollectionId != current.selectedCollectionId,
               builder: (context, state) {
                 debugPrint('build item ${item.id.value}');
-                return Stack(
-                  children: [
-                    ListTile(
-                      tileColor: colorScheme.surface,
-                      selectedTileColor: colorScheme.surfaceVariant,
-                      iconColor: item.color.color,
-                      selectedColor: item.color.color,
-                      selected: state.selectedCollectionId?.value == item.id.value,
-                      onTap: () {
-                        context
-                            .read<NavigationTodoCubit>()
-                            .selectedTodoCollectionChanged(item.id);
-        
-                        if (Breakpoints.small.isActive(context)) {
-                          context.pushNamed(
-                            TodoDetailPage.pageConfig.name,
-                            pathParameters: {'collectionId': item.id.value},
-                          );
-                        }
-                      },
-                      leading: const Icon(Icons.circle),
-                      title: Text(item.title),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: FloatingActionButton(
-                        onPressed: () => context.pushNamed(
-                          CreateTodoCollectionPage.pageConfig.name,
-                        ),
-                        child: Icon(CreateTodoCollectionPage.pageConfig.icon),
-                      ),
-                    ),
-                  ],
+                return ListTile(
+                  tileColor: colorScheme.surface,
+                  selectedTileColor: colorScheme.surfaceVariant,
+                  iconColor: item.color.color,
+                  selectedColor: item.color.color,
+                  selected: state.selectedCollectionId?.value == item.id.value,
+                  onTap: () {
+                    context
+                        .read<NavigationTodoCubit>()
+                        .selectedTodoCollectionChanged(item.id);
+
+                    if (Breakpoints.small.isActive(context)) {
+                      context.pushNamed(
+                        TodoDetailPage.pageConfig.name,
+                        pathParameters: {'collectionId': item.id.value},
+                      );
+                    }
+                  },
+                  leading: const Icon(Icons.circle),
+                  title: Text(item.title),
                 );
               },
             );
           },
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: FloatingActionButton(
+              key: const Key('create-todo-collection'),
+              heroTag: 'create-todo-collection',
+              onPressed: () {
+                context
+                    .pushNamed(CreateTodoCollectionPage.pageConfig.name)
+                    .then((value) => null);
+              },
+              child: Icon(CreateTodoCollectionPage.pageConfig.icon),
+            ),
+          ),
         ),
       ],
     );
