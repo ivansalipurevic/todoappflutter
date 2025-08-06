@@ -6,12 +6,12 @@ import 'package:todo_app/0_data/models/todo_entry_model.dart';
 class MemoryLocalDataSource implements TodoLocalDataSourceInterface {
   final List<TodoCollectionModel> todoCollections = [];
   final Map<String, List<TodoEntryModel>> todoEntries = {};
+
   @override
   Future<bool> createTodoCollection({required TodoCollectionModel collection}) {
     try {
       todoCollections.add(collection);
       todoEntries.putIfAbsent(collection.id, () => []);
-
       return Future.value(true);
     } on Exception catch (_) {
       throw CacheException();
@@ -45,7 +45,6 @@ class MemoryLocalDataSource implements TodoLocalDataSourceInterface {
         (element) => element.id == collectionId,
         orElse: () => throw CollectionNotFoundException(),
       );
-
       return Future.value(collectionModel);
     } on Exception catch (_) {
       throw CacheException();
@@ -112,9 +111,6 @@ class MemoryLocalDataSource implements TodoLocalDataSourceInterface {
           throw EntryNotFoundException();
         }
         final entry = todoEntries[collectionId]![indexOfElement];
-        if (entry == null) {
-          throw EntryNotFoundException();
-        }
         final updatedEntry = TodoEntryModel(
           id: entry.id,
           description: entry.description,

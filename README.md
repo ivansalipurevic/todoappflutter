@@ -2,6 +2,10 @@
 
 A new Flutter project.
 
+## 📱 Izgled aplikacije
+
+![Pregled aplikacije](Screenshot%202025-08-06%20at%2012.39.19.png)
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.

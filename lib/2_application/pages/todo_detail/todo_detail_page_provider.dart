@@ -5,9 +5,9 @@ class TodoDetailPageProvider extends StatelessWidget {
   final CollectionId collectionId;
 
   const TodoDetailPageProvider({
-    Key? key,
+    super.key,
     required this.collectionId,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

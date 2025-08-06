@@ -13,10 +13,10 @@ class TodoDetailPage extends StatelessWidget {
   final LoadTodoEntryIdsForCollection loadTodoEntryIdsForCollection;
 
   const TodoDetailPage({
-    Key? key,
+    super.key,
     required this.collectionId,
     required this.loadTodoEntryIdsForCollection,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

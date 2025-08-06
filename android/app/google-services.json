@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "806913633410",
+    "project_id": "todo-app-caeea",
+    "storage_bucket": "todo-app-caeea.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:806913633410:android:1269fae160904893c1189b",
+        "android_client_info": {
+          "package_name": "Ivan.salipurevic"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYroo23_shdP5iq5UxKfCIO7RGjCT0IlM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

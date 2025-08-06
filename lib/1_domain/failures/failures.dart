@@ -4,9 +4,9 @@ abstract class Failure {
 }
 
 class CacheFailure extends Failure {
-  const CacheFailure({required String stackTrace}) : super(stackTrace: stackTrace);
+  const CacheFailure({required super.stackTrace});
 }
 
 class ServerFailure extends Failure {
-  const ServerFailure({required String stackTrace}) : super(stackTrace: stackTrace);
+  const ServerFailure({required super.stackTrace});
 }

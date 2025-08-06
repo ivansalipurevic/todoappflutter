@@ -9,12 +9,13 @@ import 'package:todo_app/2_application/pages/create_todo_collection/create_todo_
 import 'package:todo_app/2_application/pages/dashboard/dashboard_page.dart';
 import 'package:todo_app/2_application/pages/detail/todo_detail_page.dart';
 import 'package:todo_app/2_application/pages/home/bloc/navigation_todo_cubit.dart';
+import 'package:todo_app/2_application/pages/home/component/login_button.dart';
 import 'package:todo_app/2_application/pages/overview/overview_page.dart';
 import 'package:todo_app/2_application/pages/settings/settings_page.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key, required String tab})
-      : index = tabs.indexWhere((element) => element.name == tab);
+    : index = tabs.indexWhere((element) => element.name == tab);
 
   static const PageConfig pageConfig = PageConfig(
     icon: Icons.home_rounded,
@@ -42,8 +43,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final List<NavigationDestination> destinations = HomePage.tabs
-      .map((page) =>
-          NavigationDestination(icon: Icon(page.icon), label: page.name))
+      .map(
+        (page) =>
+            NavigationDestination(icon: Icon(page.icon), label: page.name),
+      )
       .toList();
 
   @override
@@ -61,24 +64,40 @@ class _HomePageState extends State<HomePage> {
             }
           },
           child: AdaptiveLayout(
+            topNavigation: SlotLayout(
+              config: <Breakpoint, SlotLayoutConfig>{
+                Breakpoints.small: SlotLayout.from(
+                  key: const Key('top-navigation-small'),
+                  builder: (context) => const Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [LoginButton()],
+                  ),
+                ),
+              },
+            ),
             primaryNavigation: SlotLayout(
               config: <Breakpoint, SlotLayoutConfig>{
                 Breakpoints.mediumAndUp: SlotLayout.from(
                   key: const Key('primary-navigation-medium'),
-                  builder: (context) =>
-                      AdaptiveScaffold.standardNavigationRail(
-                    leading: IconButton(
-                      key: const Key('create-todo-collection'),
-                      onPressed: () async {
-                        final result = await context.pushNamed(
-                          CreateTodoCollectionPage.pageConfig.name,
-                        );
-                        if (result == true) {
-                          debugPrint('item was created successfully');
-                        }
-                      },
-                      icon: Icon(CreateTodoCollectionPage.pageConfig.icon),
-                      tooltip: 'Add collection',
+                  builder: (context) => AdaptiveScaffold.standardNavigationRail(
+                    leading: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        IconButton(
+                          key: const Key('create-todo-collection'),
+                          onPressed: () async {
+                            final result = await context.pushNamed(
+                              CreateTodoCollectionPage.pageConfig.name,
+                            );
+                            if (result == true) {
+                              debugPrint('item was created successfully');
+                            }
+                          },
+                          icon: Icon(CreateTodoCollectionPage.pageConfig.icon),
+                          tooltip: 'Add collection',
+                        ),
+                        const LoginButton(),
+                      ],
                     ),
                     trailing: IconButton(
                       onPressed: () =>
@@ -86,13 +105,13 @@ class _HomePageState extends State<HomePage> {
                       icon: Icon(SettingsPage.pageConfig.icon),
                     ),
                     selectedLabelTextStyle: TextStyle(
-                      color: theme.colorScheme.onBackground,
+                      color: theme.colorScheme.onSurface,
                     ),
                     selectedIconTheme: IconThemeData(
-                      color: theme.colorScheme.onBackground,
+                      color: theme.colorScheme.onSurface,
                     ),
                     unselectedIconTheme: IconThemeData(
-                      color: theme.colorScheme.onBackground.withOpacity(0.5),
+                      color: theme.colorScheme.onSurface.withAlpha(127),
                     ),
                     onDestinationSelected: (index) =>
                         _tapOnNavigationDestination(context, index),
@@ -108,11 +127,17 @@ class _HomePageState extends State<HomePage> {
               config: <Breakpoint, SlotLayoutConfig>{
                 Breakpoints.small: SlotLayout.from(
                   key: const Key('bottom-navigation-small'),
-                  builder: (context) =>
+                  builder: (context) => Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const LoginButton(),
                       AdaptiveScaffold.standardBottomNavigationBar(
-                    destinations: destinations,
-                    onDestinationSelected: (index) =>
-                        _tapOnNavigationDestination(context, index),
+                        destinations: destinations,
+                        currentIndex: widget.index,
+                        onDestinationSelected: (index) =>
+                            _tapOnNavigationDestination(context, index),
+                      ),
+                    ],
                   ),
                 ),
               },
@@ -131,25 +156,29 @@ class _HomePageState extends State<HomePage> {
                   key: const Key('secondary-body'),
                   builder: widget.index != 1
                       ? null
-                      : (_) => BlocBuilder<NavigationTodoCubit,
-                              NavigationTodoCubitState>(
-                            builder: (context, state) {
-                              final selectedId = state.selectedCollectionId;
-                              if (selectedId == null) {
-                                return const Placeholder();
-                              }
-                              return TodoDetailPage(
-                                key: Key(selectedId.value),
-                                collectionId: selectedId,
-                                loadTodoEntryIdsForCollection:
-                                    LoadTodoEntryIdsForCollection(
-                                  todoRepository:
-                                      RepositoryProvider.of<TodoRepository>(
-                                          context),
-                                ),
-                              );
-                            },
-                          ),
+                      : (_) =>
+                            BlocBuilder<
+                              NavigationTodoCubit,
+                              NavigationTodoCubitState
+                            >(
+                              builder: (context, state) {
+                                final selectedId = state.selectedCollectionId;
+                                if (selectedId == null) {
+                                  return const Placeholder();
+                                }
+                                return TodoDetailPage(
+                                  key: Key(selectedId.value),
+                                  collectionId: selectedId,
+                                  loadTodoEntryIdsForCollection:
+                                      LoadTodoEntryIdsForCollection(
+                                        todoRepository:
+                                            RepositoryProvider.of<
+                                              TodoRepository
+                                            >(context),
+                                      ),
+                                );
+                              },
+                            ),
                 ),
               },
             ),
