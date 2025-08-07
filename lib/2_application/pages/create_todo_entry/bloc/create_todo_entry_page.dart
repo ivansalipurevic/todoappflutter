@@ -19,27 +19,25 @@ class CreateTodoEntryPage extends StatelessWidget {
   static const pageConfig = PageConfig(
     name: 'create_todo_entry',
     icon: Icons.add_task_rounded,
-    child: Placeholder(),
+    child: Placeholder(), 
   );
-
-  
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Form(
-        
-        child: Column(
-          children: [
-            BlocBuilder<CreateTodoEntryPageCubit, CreateTodoEntryPageState>(
-              builder: (context, state) {
-                return TextFormField(
-                  decoration: const InputDecoration(labelText: 'description'),
+    return BlocBuilder<CreateTodoEntryPageCubit, CreateTodoEntryPageState>(
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Description'),
                   onChanged: (value) {
                     context.read<CreateTodoEntryPageCubit>().descriptionChanged(
-                      description: value,
-                    );
+                          description: value,
+                        );
                   },
                   validator: (_) {
                     final description = state.description;
@@ -53,13 +51,34 @@ class CreateTodoEntryPage extends StatelessWidget {
                         return null;
                     }
                   },
-                );
-               
-              },
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: state.isValid
+                      ? () {
+                          context.read<CreateTodoEntryPageCubit>().submit();
+                        }
+                      : null,
+                  child: const Text('Submit'),
+                ),
+                const SizedBox(height: 16),
+                if (state.status == FormSubmissionStatus.loading)
+                  const CircularProgressIndicator(),
+                if (state.status == FormSubmissionStatus.success)
+                  const Text(
+                    'Todo entry created successfully!',
+                    style: TextStyle(color: Colors.green),
+                  ),
+                if (state.status == FormSubmissionStatus.failure)
+                  const Text(
+                    'Failed to create todo entry.',
+                    style: TextStyle(color: Colors.red),
+                  ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

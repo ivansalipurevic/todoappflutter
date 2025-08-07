@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo_app/1_domain/entities/todo_collection.dart';
 import 'package:todo_app/2_application/pages/create_todo_collection/create_todo_collection_page.dart';
-import 'package:todo_app/2_application/pages/home/bloc/navigation_todo_cubit.dart';
 import 'package:todo_app/2_application/pages/detail/todo_detail_page.dart';
+import 'package:todo_app/2_application/pages/home/bloc/navigation_todo_cubit.dart';
 
 class TodoOverviewLoaded extends StatelessWidget {
   const TodoOverviewLoaded({super.key, required this.collections});
@@ -14,6 +14,10 @@ class TodoOverviewLoaded extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (collections.isEmpty) {
+      return const Center(child: Text('No todo collections yet.'));
+    }
+
     return Stack(
       children: [
         ListView.builder(
@@ -26,11 +30,9 @@ class TodoOverviewLoaded extends StatelessWidget {
               buildWhen: (previous, current) =>
                   previous.selectedCollectionId != current.selectedCollectionId,
               builder: (context, state) {
-                debugPrint('build item ${item.id.value}');
                 return ListTile(
                   tileColor: colorScheme.surface,
                   selectedTileColor: colorScheme.surfaceContainerHighest,
-
                   iconColor: item.color.color,
                   selectedColor: item.color.color,
                   selected: state.selectedCollectionId?.value == item.id.value,

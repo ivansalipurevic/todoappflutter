@@ -76,6 +76,7 @@ final routes = GoRouter(
     GoRoute(
       name: CreateTodoCollectionPage.pageConfig.name,
       path: '$_basePath/overview/${CreateTodoCollectionPage.pageConfig.name}',
+      builder: (context, state) => const CreateTodoCollectionPage(),
     ),
     GoRoute(
       path: '$_basePath/overview/:collectionId',

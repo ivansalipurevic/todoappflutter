@@ -15,7 +15,7 @@ import 'package:todo_app/2_application/pages/settings/settings_page.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key, required String tab})
-    : index = tabs.indexWhere((element) => element.name == tab);
+      : index = tabs.indexWhere((element) => element.name == tab);
 
   static const PageConfig pageConfig = PageConfig(
     icon: Icons.home_rounded,
@@ -33,7 +33,7 @@ class HomePage extends StatefulWidget {
     PageConfig(
       icon: OverviewPage.pageConfig.icon,
       name: OverviewPage.pageConfig.name,
-      child: OverviewPage(),
+      child: OverviewPageProvider(),
     ),
   ];
 
@@ -43,10 +43,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final List<NavigationDestination> destinations = HomePage.tabs
-      .map(
-        (page) =>
-            NavigationDestination(icon: Icon(page.icon), label: page.name),
-      )
+      .map((page) => NavigationDestination(icon: Icon(page.icon), label: page.name))
       .toList();
 
   @override
@@ -54,6 +51,22 @@ class _HomePageState extends State<HomePage> {
     final theme = Theme.of(context);
 
     return Scaffold(
+      floatingActionButton: Breakpoints.small.isActive(context)
+          ? FloatingActionButton(
+              onPressed: () async {
+                final result = await context.pushNamed(
+                  CreateTodoCollectionPage.pageConfig.name,
+                );
+                if (result == true) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Collection created successfully')),
+                  );
+                }
+              },
+              child: Icon(CreateTodoCollectionPage.pageConfig.icon),
+              tooltip: 'Add collection',
+            )
+          : null,
       body: SafeArea(
         child: BlocListener<NavigationTodoCubit, NavigationTodoCubitState>(
           listenWhen: (previous, current) =>
@@ -90,7 +103,9 @@ class _HomePageState extends State<HomePage> {
                               CreateTodoCollectionPage.pageConfig.name,
                             );
                             if (result == true) {
-                              debugPrint('item was created successfully');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Collection created successfully')),
+                              );
                             }
                           },
                           icon: Icon(CreateTodoCollectionPage.pageConfig.icon),
@@ -100,15 +115,16 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                     trailing: IconButton(
-                      onPressed: () =>
-                          context.pushNamed(SettingsPage.pageConfig.name),
+                      onPressed: () => context.pushNamed(SettingsPage.pageConfig.name),
                       icon: Icon(SettingsPage.pageConfig.icon),
+                      tooltip: 'Settings',
                     ),
-                    selectedLabelTextStyle: TextStyle(
-                      color: theme.colorScheme.onSurface,
+                    selectedLabelTextStyle: theme.textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.primary,
                     ),
                     selectedIconTheme: IconThemeData(
-                      color: theme.colorScheme.onSurface,
+                      color: theme.colorScheme.primary,
                     ),
                     unselectedIconTheme: IconThemeData(
                       color: theme.colorScheme.onSurface.withAlpha(127),
@@ -146,7 +162,19 @@ class _HomePageState extends State<HomePage> {
               config: <Breakpoint, SlotLayoutConfig>{
                 Breakpoints.smallAndUp: SlotLayout.from(
                   key: const Key('primary-body'),
-                  builder: (_) => HomePage.tabs[widget.index].child,
+                  builder: (_) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Text(
+                          HomePage.tabs[widget.index].name.toUpperCase(),
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                      ),
+                      Expanded(child: HomePage.tabs[widget.index].child),
+                    ],
+                  ),
                 ),
               },
             ),
@@ -156,29 +184,40 @@ class _HomePageState extends State<HomePage> {
                   key: const Key('secondary-body'),
                   builder: widget.index != 1
                       ? null
-                      : (_) =>
-                            BlocBuilder<
-                              NavigationTodoCubit,
-                              NavigationTodoCubitState
-                            >(
-                              builder: (context, state) {
-                                final selectedId = state.selectedCollectionId;
-                                if (selectedId == null) {
-                                  return const Placeholder();
-                                }
-                                return TodoDetailPage(
-                                  key: Key(selectedId.value),
-                                  collectionId: selectedId,
-                                  loadTodoEntryIdsForCollection:
-                                      LoadTodoEntryIdsForCollection(
-                                        todoRepository:
-                                            RepositoryProvider.of<
-                                              TodoRepository
-                                            >(context),
-                                      ),
+                      : (_) => BlocBuilder<NavigationTodoCubit, NavigationTodoCubitState>(
+                            builder: (context, state) {
+                              final selectedId = state.selectedCollectionId;
+                              if (selectedId == null) {
+                                return Center(
+                                  child: Text(
+                                    'Select a collection to view details',
+                                    style: Theme.of(context).textTheme.bodyLarge,
+                                  ),
                                 );
-                              },
-                            ),
+                              }
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(16),
+                                    child: Text(
+                                      'Details for: ${selectedId.value}',
+                                      style: Theme.of(context).textTheme.titleMedium,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: TodoDetailPage(
+                                      key: Key(selectedId.value),
+                                      collectionId: selectedId,
+                                      loadTodoEntryIdsForCollection: LoadTodoEntryIdsForCollection(
+                                        todoRepository: RepositoryProvider.of<TodoRepository>(context),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
                 ),
               },
             ),

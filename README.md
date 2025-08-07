@@ -2,9 +2,11 @@
 
 A new Flutter project.
 
-## 📱 Izgled aplikacije
+## Izgled aplikacije
 
-![Pregled aplikacije](Screenshot%202025-08-06%20at%2012.39.19.png)
+![Pregled aplikacije 1](screenshots/overview1.png)
+
+![Pregled aplikacije 2](screenshots/overview2.png)
 
 ## Getting Started
 
